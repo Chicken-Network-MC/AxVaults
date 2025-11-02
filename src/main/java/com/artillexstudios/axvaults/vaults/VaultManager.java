@@ -7,6 +7,8 @@ import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,9 +19,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class VaultManager {
     private static final ConcurrentHashMap<UUID, VaultPlayer> players = new ConcurrentHashMap<>();
+    private static final Logger log = LoggerFactory.getLogger(VaultManager.class);
 
     public static ConcurrentHashMap<UUID, VaultPlayer> getPlayers() {
         return players;
+    }
+
+    public static VaultPlayer getPlayerCache(@NotNull OfflinePlayer offlinePlayer) {
+        return players.get(offlinePlayer.getUniqueId());
     }
 
     public static CompletableFuture<VaultPlayer> getPlayer(@NotNull OfflinePlayer offlinePlayer) {
@@ -63,6 +70,7 @@ public class VaultManager {
         VaultPlayer vaultPlayer = vault.getVaultPlayer();
         boolean success = vaultPlayer.removeVault(vault) != null;
         if (success) cleanup(vaultPlayer);
+        log.info("Removed Vault {} from VaultPlayer", vaultPlayer.getUUID());
         return success;
     }
 }

@@ -9,6 +9,7 @@ import revxrsal.commands.bukkit.BukkitCommandHandler;
 import revxrsal.commands.orphan.Orphans;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import static com.artillexstudios.axvaults.AxVaults.CONFIG;
@@ -24,7 +25,7 @@ public class CommandManager {
             if (!player.hasPermission("axvaults.openremote")) return new ArrayList<>();
 
             final ArrayList<String> numbers = new ArrayList<>();
-            for (Integer i : VaultManager.getPlayers().get(player.getUniqueId()).getVaultMap().keySet()) {
+            for (Integer i : List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)) {
                 numbers.add("" + i);
             }
             return numbers;

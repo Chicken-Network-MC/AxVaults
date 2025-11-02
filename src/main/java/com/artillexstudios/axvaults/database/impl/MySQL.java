@@ -6,7 +6,6 @@ import com.artillexstudios.axvaults.database.Database;
 import com.artillexstudios.axvaults.placed.PlacedVaults;
 import com.artillexstudios.axvaults.utils.VaultUtils;
 import com.artillexstudios.axvaults.vaults.Vault;
-import com.artillexstudios.axvaults.vaults.VaultManager;
 import com.artillexstudios.axvaults.vaults.VaultPlayer;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -21,9 +20,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -262,90 +258,6 @@ public class MySQL implements Database {
                     final String vault = rs.getString(2);
                     final Integer vaultInt = vault == null ? null : Integer.parseInt(vault);
                     PlacedVaults.addVault(Serializers.LOCATION.deserialize(rs.getString(1)), vaultInt);
-                }
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private void sendMessage(@NotNull ChangeType changeType, int id, UUID uuid) {
-        if (CONFIG.getString("multi-server-support", "none").equalsIgnoreCase("none")) return;
-        
-        final String sql = "INSERT INTO axvaults_messages(event, vault_id, uuid, date) VALUES (?, ?, ?, ?);";
-        try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setShort(1, (short) changeType.ordinal());
-            stmt.setInt(2, id);
-            stmt.setString(3, uuid.toString());
-            stmt.setLong(4, System.currentTimeMillis());
-            stmt.executeUpdate();
-            try (ResultSet rs = stmt.getGeneratedKeys()) {
-                if (rs.next()) sentFromHere.put(rs.getInt(1), System.currentTimeMillis() + 10_000L);
-            }
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private final ArrayList<Integer> acknowledged = new ArrayList<>();
-    private final HashMap<Integer, Long> sentFromHere = new HashMap<>();
-    public void checkForChanges() { // id, event, vault_id, uuid, date
-        if (CONFIG.getString("multi-server-support", "none").equalsIgnoreCase("none")) return;
-
-        final String sql = "SELECT * FROM axvaults_messages;";
-        try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    if (sentFromHere.containsKey(rs.getInt(1))) return;
-                    if (acknowledged.contains(rs.getInt(1))) continue;
-                    acknowledged.add(rs.getInt(1));
-                    final int num = rs.getInt(3);
-                    final UUID uuid = UUID.fromString(rs.getString(4));
-
-                    switch (ChangeType.entries[rs.getInt(2)]) {
-                        case UPDATE -> {
-                            final VaultPlayer vp = VaultManager.getPlayers().get(uuid);
-                            if (vp == null) {
-                                return;
-                            }
-                            final Vault vault = vp.getVault(num);
-                            if (vault == null) {
-                                return;
-                            }
-                            updateVault(vault);
-                        }
-                    }
-                }
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public void removeOldChanges() {
-        final String sql = "DELETE FROM axvaults_messages WHERE ? - 7500 > date;";
-        try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setLong(1, System.currentTimeMillis());
-            stmt.executeUpdate();
-            acknowledged.clear();
-            sentFromHere.entrySet().removeIf(entry -> entry.getValue() < System.currentTimeMillis());
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private void updateVault(@NotNull Vault vault) {
-        final String sql = "SELECT * FROM axvaults_data WHERE uuid = ? AND id = ?;";
-        try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, vault.getUUID().toString());
-            stmt.setInt(2, vault.getId());
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    final ItemStack[] items = Serializers.ITEM_ARRAY.deserialize(rs.getBytes(3));
-                    vault.setContents(items);
-                    vault.setIcon(rs.getString(4) == null ? null : Material.valueOf(rs.getString(4)));
                 }
             }
         } catch (SQLException ex) {

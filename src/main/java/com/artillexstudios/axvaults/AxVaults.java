@@ -18,7 +18,6 @@ import com.artillexstudios.axvaults.database.Database;
 import com.artillexstudios.axvaults.database.impl.H2;
 import com.artillexstudios.axvaults.database.impl.MySQL;
 import com.artillexstudios.axvaults.database.impl.SQLite;
-import com.artillexstudios.axvaults.database.messaging.SQLMessaging;
 import com.artillexstudios.axvaults.hooks.HookManager;
 import com.artillexstudios.axvaults.libraries.Libraries;
 import com.artillexstudios.axvaults.listeners.BlacklistListener;
@@ -115,7 +114,6 @@ public final class AxVaults extends AxPlugin {
         CommandManager.load();
 
         AutoSaveScheduler.start();
-        SQLMessaging.start();
 
         metrics = new AxMetrics(this, 3);
         metrics.start();
@@ -141,7 +139,6 @@ public final class AxVaults extends AxPlugin {
         }
 
         CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new)).join();
-        SQLMessaging.stop();
         database.disable();
         threadedQueue.stop();
     }

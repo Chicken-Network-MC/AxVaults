@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -19,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.artillexstudios.axvaults.AxVaults.CONFIG;
 
 public class VaultPlayer {
+    private static final Logger log = LoggerFactory.getLogger(VaultPlayer.class);
     private final UUID uuid;
     private final ConcurrentHashMap<Integer, Vault> vaultMap = new ConcurrentHashMap<>();
     private boolean loaded = false;
@@ -81,7 +84,14 @@ public class VaultPlayer {
     public void save() {
         AxVaults.getThreadedQueue().submit(() -> {
             for (Vault vault : vaultMap.values()) {
+                if (!vault.hasChanged().get()) {
+                    log.info("Vault {} of player {} has not changed, skipping save.", vault.getId(), uuid);
+                    continue;
+                }
+
+                log.info("Saving vault {} of player {}", vault.getId(), uuid);
                 AxVaults.getDatabase().saveVault(vault);
+                vault.hasChanged().set(false);
             }
         });
 
