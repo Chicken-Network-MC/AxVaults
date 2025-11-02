@@ -2,7 +2,6 @@ package com.artillexstudios.axvaults.commands;
 
 import com.artillexstudios.axvaults.AxVaults;
 import com.artillexstudios.axvaults.utils.CommandMessages;
-import com.artillexstudios.axvaults.vaults.VaultManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import revxrsal.commands.bukkit.BukkitCommandHandler;

@@ -15,11 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -42,13 +38,13 @@ public class SQLite implements Database {
         }
 
         String CREATE_TABLE = """
-            CREATE TABLE IF NOT EXISTS `axvaults_data`(
-              `id` INT(128) NOT NULL,
-              `uuid` VARCHAR(36) NOT NULL,
-              `storage` LONGBLOB,
-              `icon` VARCHAR(128)
-            );
-        """;
+                    CREATE TABLE IF NOT EXISTS `axvaults_data`(
+                      `id` INT(128) NOT NULL,
+                      `uuid` VARCHAR(36) NOT NULL,
+                      `storage` LONGBLOB,
+                      `icon` VARCHAR(128)
+                    );
+                """;
 
         try (PreparedStatement stmt = conn.prepareStatement(CREATE_TABLE)) {
             stmt.executeUpdate();
@@ -57,12 +53,12 @@ public class SQLite implements Database {
         }
 
         String CREATE_TABLE2 = """
-            CREATE TABLE IF NOT EXISTS `axvaults_blocks` (
-              `location` VARCHAR(255) NOT NULL,
-              `number` INT,
-              PRIMARY KEY (`location`)
-            );
-        """;
+                    CREATE TABLE IF NOT EXISTS `axvaults_blocks` (
+                      `location` VARCHAR(255) NOT NULL,
+                      `number` INT,
+                      PRIMARY KEY (`location`)
+                    );
+                """;
 
         try (PreparedStatement stmt = conn.prepareStatement(CREATE_TABLE2)) {
             stmt.executeUpdate();
@@ -77,7 +73,7 @@ public class SQLite implements Database {
             // delete empty vaults
             if (result instanceof Boolean bool && bool) {
                 String sql = "DELETE FROM axvaults_data WHERE uuid = ? AND id = ?;";
-                try (PreparedStatement stmt = conn.prepareStatement(sql)){
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                     stmt.setString(1, vault.getUUID().toString());
                     stmt.setInt(2, vault.getId());
                     stmt.executeUpdate();

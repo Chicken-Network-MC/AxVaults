@@ -9,9 +9,7 @@ import org.bukkit.command.CommandSender;
 
 import java.util.Collections;
 
-import static com.artillexstudios.axvaults.AxVaults.CONFIG;
-import static com.artillexstudios.axvaults.AxVaults.MESSAGES;
-import static com.artillexstudios.axvaults.AxVaults.MESSAGEUTILS;
+import static com.artillexstudios.axvaults.AxVaults.*;
 
 public enum Reload {
     INSTANCE;

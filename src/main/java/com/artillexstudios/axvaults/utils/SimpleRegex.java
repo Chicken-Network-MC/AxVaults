@@ -20,12 +20,10 @@ public class SimpleRegex {
         if (starts && ends) {
             string = string.substring(1, string.length() - 1);
             regexType = RegexType.CONTAINS;
-        }
-        else if (starts) {
+        } else if (starts) {
             string = string.substring(1);
             regexType = RegexType.STARTS_WITH;
-        }
-        else if (ends) {
+        } else if (ends) {
             string = string.substring(0, string.length() - 1);
             regexType = RegexType.ENDS_WITH;
         }

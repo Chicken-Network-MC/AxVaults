@@ -14,7 +14,6 @@ public class InventoryClickListener implements Listener {
         if (!(PaperUtils.getHolder(event.getInventory(), false) instanceof Vault)) return;
         if (AxVaults.isStopping()) {
             event.setCancelled(true);
-            return;
         }
     }
 }

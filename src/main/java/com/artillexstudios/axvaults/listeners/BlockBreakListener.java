@@ -12,7 +12,7 @@ import static com.artillexstudios.axvaults.AxVaults.MESSAGEUTILS;
 
 public class BlockBreakListener implements Listener {
 
-    @EventHandler (ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onBreak(@NotNull BlockBreakEvent event) {
         if (!PlacedVaults.getVaults().containsKey(event.getBlock().getLocation())) return;
         event.setCancelled(true);

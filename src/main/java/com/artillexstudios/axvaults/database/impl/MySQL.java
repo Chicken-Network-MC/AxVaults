@@ -58,13 +58,13 @@ public class MySQL implements Database {
         this.dataSource = new HikariDataSource(hConfig);
 
         String CREATE_TABLE = """
-            CREATE TABLE IF NOT EXISTS `axvaults_data`(
-              `id` INT(128) NOT NULL,
-              `uuid` VARCHAR(36) NOT NULL,
-              `storage` LONGBLOB,
-              `icon` VARCHAR(128)
-            );
-        """;
+                    CREATE TABLE IF NOT EXISTS `axvaults_data`(
+                      `id` INT(128) NOT NULL,
+                      `uuid` VARCHAR(36) NOT NULL,
+                      `storage` LONGBLOB,
+                      `icon` VARCHAR(128)
+                    );
+                """;
 
         try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(CREATE_TABLE)) {
             stmt.executeUpdate();
@@ -73,12 +73,12 @@ public class MySQL implements Database {
         }
 
         String CREATE_TABLE2 = """
-            CREATE TABLE IF NOT EXISTS `axvaults_blocks` (
-              `location` VARCHAR(255) NOT NULL,
-              `number` INT,
-              PRIMARY KEY (`location`)
-            );
-        """;
+                    CREATE TABLE IF NOT EXISTS `axvaults_blocks` (
+                      `location` VARCHAR(255) NOT NULL,
+                      `number` INT,
+                      PRIMARY KEY (`location`)
+                    );
+                """;
 
         try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(CREATE_TABLE2)) {
             stmt.executeUpdate();
@@ -87,15 +87,15 @@ public class MySQL implements Database {
         }
 
         String CREATE_TABLE3 = """
-            CREATE TABLE IF NOT EXISTS axvaults_messages (
-              id INT NOT NULL AUTO_INCREMENT,
-              event TINYINT,
-              vault_id INT NOT NULL,
-              uuid VARCHAR(36) NOT NULL,
-              date BIGINT NOT NULL,
-              PRIMARY KEY (id)
-            );
-        """;
+                    CREATE TABLE IF NOT EXISTS axvaults_messages (
+                      id INT NOT NULL AUTO_INCREMENT,
+                      event TINYINT,
+                      vault_id INT NOT NULL,
+                      uuid VARCHAR(36) NOT NULL,
+                      date BIGINT NOT NULL,
+                      PRIMARY KEY (id)
+                    );
+                """;
 
         try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(CREATE_TABLE3)) {
             stmt.executeUpdate();
@@ -110,7 +110,7 @@ public class MySQL implements Database {
             // delete empty vaults
             if (result instanceof Boolean bool && bool) {
                 String sql = "DELETE FROM axvaults_data WHERE uuid = ? AND id = ?;";
-                try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)){
+                try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
                     stmt.setString(1, vault.getUUID().toString());
                     stmt.setInt(2, vault.getId());
                     stmt.executeUpdate();

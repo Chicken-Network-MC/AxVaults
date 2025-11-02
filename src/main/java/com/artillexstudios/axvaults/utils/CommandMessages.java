@@ -56,7 +56,7 @@ public class CommandMessages implements LocaleReader {
                 res = MESSAGES.getString("commands.invalid-selector");
                 break;
             }
-            default:  {
+            default: {
                 res = MESSAGES.getString("commands.invalid-command");
                 break;
             }

@@ -18,9 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
-import static com.artillexstudios.axvaults.AxVaults.CONFIG;
-import static com.artillexstudios.axvaults.AxVaults.MESSAGES;
-import static com.artillexstudios.axvaults.AxVaults.MESSAGEUTILS;
+import static com.artillexstudios.axvaults.AxVaults.*;
 
 public class VaultSelector {
 

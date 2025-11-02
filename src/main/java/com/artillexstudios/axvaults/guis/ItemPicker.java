@@ -48,7 +48,8 @@ public class ItemPicker {
             ItemStack it = null;
             try {
                 it = ItemBuilder.create(material).glow(Objects.equals(vault.getIcon(), material)).get();
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             if (it == null) continue;
             final ItemMeta meta = it.hasItemMeta() ? it.getItemMeta() : Bukkit.getItemFactory().getItemMeta(it.getType());
             if (meta == null) continue;

@@ -1,15 +1,6 @@
 package com.artillexstudios.axvaults.commands;
 
-import com.artillexstudios.axvaults.commands.subcommands.Converter;
-import com.artillexstudios.axvaults.commands.subcommands.Debug;
-import com.artillexstudios.axvaults.commands.subcommands.Delete;
-import com.artillexstudios.axvaults.commands.subcommands.ForceOpen;
-import com.artillexstudios.axvaults.commands.subcommands.Help;
-import com.artillexstudios.axvaults.commands.subcommands.Reload;
-import com.artillexstudios.axvaults.commands.subcommands.Save;
-import com.artillexstudios.axvaults.commands.subcommands.Set;
-import com.artillexstudios.axvaults.commands.subcommands.Stats;
-import com.artillexstudios.axvaults.commands.subcommands.View;
+import com.artillexstudios.axvaults.commands.subcommands.*;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

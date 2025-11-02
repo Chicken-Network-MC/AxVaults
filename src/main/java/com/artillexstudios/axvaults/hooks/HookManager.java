@@ -11,7 +11,8 @@ public class HookManager {
             placeholderParser = new PlaceholderAPIParser();
             Bukkit.getConsoleSender().sendMessage(StringUtils.formatToString("&#00FF00[AxVaults] Hooked into PlaceholderAPI!"));
         } else {
-            placeholderParser = new Placeholders() {};
+            placeholderParser = new Placeholders() {
+            };
         }
     }
 

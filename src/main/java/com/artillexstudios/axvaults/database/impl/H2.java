@@ -78,7 +78,7 @@ public class H2 implements Database {
             // delete empty vaults
             if (result instanceof Boolean bool && bool) {
                 String sql = "DELETE FROM axvaults_data WHERE uuid = ? AND id = ?;";
-                try (PreparedStatement stmt = conn.prepareStatement(sql)){
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                     stmt.setString(1, vault.getUUID().toString());
                     stmt.setInt(2, vault.getId());
                     stmt.executeUpdate();
