@@ -72,8 +72,6 @@ public class DefaultRedisDatabase extends RedisDatabase {
         log.info("Checking if user with uuid is locked {}", uuid);
         return CompletableFuture.supplyAsync(() -> {
             String raw = syncCommands.get(String.format(format, prefix, uuid.toString()));
-
-            log.info("Is locked raw value: {}", (raw != null));
             return raw != null;
         }, executor);
     }
