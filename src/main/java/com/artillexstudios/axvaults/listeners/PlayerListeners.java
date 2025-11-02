@@ -1,5 +1,6 @@
 package com.artillexstudios.axvaults.listeners;
 
+import com.artillexstudios.axvaults.database.redis.DefaultRedisDatabase;
 import com.artillexstudios.axvaults.vaults.VaultManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -24,9 +25,13 @@ public class PlayerListeners implements Listener {
     public void onQuit(@NotNull PlayerQuitEvent event) {
         VaultManager.getPlayer(event.getPlayer(), false).thenAccept((vaultPlayer) -> {
             log.info("Unloading player: " + event.getPlayer().getName());
-            vaultPlayer.save();
-            vaultPlayer.getVaultMap().values().forEach(VaultManager::removeVault);
+            if (vaultPlayer != null) {
+                vaultPlayer.save();
+                vaultPlayer.getVaultMap().values().forEach(VaultManager::removeVault);
+            }
+
             VaultManager.getPlayers().remove(event.getPlayer().getUniqueId());
+            DefaultRedisDatabase.getInstance().unlock(event.getPlayer().getUniqueId());
         });
     }
 }

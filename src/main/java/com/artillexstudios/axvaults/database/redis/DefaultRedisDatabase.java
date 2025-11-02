@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
@@ -77,29 +78,49 @@ public class DefaultRedisDatabase extends RedisDatabase {
         }, executor);
     }
 
+    // totally not ai generated shutdown logic
     public void shutdown() {
         log.info("Shutting down redis database");
+
+        if (executor instanceof ExecutorService) {
+            ((ExecutorService) executor).shutdownNow();
+            log.info("Executor shutdown completed");
+        }
+
         String pattern = prefix + ":*:lock";
 
         try {
             ScanCursor cursor = ScanCursor.INITIAL;
-            ScanArgs scanArgs = ScanArgs.Builder.limit(1000).match(pattern);
+            ScanArgs scanArgs = ScanArgs.Builder.limit(100).match(pattern);
             int deletedCount = 0;
+            int maxIterations = 1000;
+            int iteration = 0;
+            KeyScanCursor<String> scanResult = null;
 
             do {
-                KeyScanCursor<String> scanResult = syncCommands.scan(cursor, scanArgs);
+                scanResult = syncCommands.scan(cursor, scanArgs);
 
                 List<String> keys = scanResult.getKeys();
                 if (!keys.isEmpty()) {
                     long deleted = syncCommands.del(keys.toArray(new String[0]));
                     deletedCount += (int) deleted;
-                    log.info("Deleted {} lock keys", deleted);
+                    log.info("Deleted {} lock keys (iteration {})", deleted, iteration);
                 }
 
                 cursor = ScanCursor.of(scanResult.getCursor());
-            } while (!cursor.isFinished());
+                iteration++;
 
-            log.info("Total deleted lock keys: {}", deletedCount);
+                if (iteration >= maxIterations) {
+                    log.warn("Reached max iterations ({}), stopping scan", maxIterations);
+                    break;
+                }
+
+                if ("0".equals(scanResult.getCursor())) {
+                    break;
+                }
+            } while (!scanResult.isFinished());
+
+            log.info("Total deleted lock keys: {} in {} iterations", deletedCount, iteration);
         } catch (Exception e) {
             log.error("Error while cleaning up locks", e);
         }
