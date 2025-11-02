@@ -33,7 +33,7 @@ public class PlayerVaultsXConverter {
 
                 for (String route : data.getBackingDocument().getRoutesAsStrings(false)) {
                     final int num = Integer.parseInt(route.replace("vault", ""));
-                    VaultPlayer vaultPlayer = VaultManager.getPlayer(Bukkit.getOfflinePlayer(uuid)).join();
+                    VaultPlayer vaultPlayer = VaultManager.getPlayer(Bukkit.getOfflinePlayer(uuid), true).join();
                     final Vault vault = new Vault(vaultPlayer, num, null, getItems(data.getString(route)));
                     AxVaults.getDatabase().saveVault(vault);
                     vaults++;

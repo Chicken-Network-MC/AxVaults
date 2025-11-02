@@ -92,7 +92,12 @@ public class VaultSelector {
         final HashMap<String, String> replacements = new HashMap<>();
         replacements.put("%num%", "" + num);
 
-        VaultManager.getPlayer(player).thenAccept(vaultPlayer -> {
+        VaultManager.getPlayer(player, false).thenAccept(vaultPlayer -> {
+            if (vaultPlayer == null) {
+                player.closeInventory();
+                return;
+            }
+
             Vault vault = vaultPlayer.getVault(num);
             if (vault != null) {
                 replacements.put("%used%", "" + vault.getSlotsFilled());

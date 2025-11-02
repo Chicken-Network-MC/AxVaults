@@ -1,8 +1,9 @@
-package com.artillexstudios.axvaults.database.impl;
+package com.artillexstudios.axvaults.database.sql.impl;
 
 import com.artillexstudios.axapi.serializers.Serializers;
 import com.artillexstudios.axapi.utils.StringUtils;
-import com.artillexstudios.axvaults.database.Database;
+import com.artillexstudios.axvaults.database.redis.DefaultRedisDatabase;
+import com.artillexstudios.axvaults.database.sql.Database;
 import com.artillexstudios.axvaults.placed.PlacedVaults;
 import com.artillexstudios.axvaults.utils.VaultUtils;
 import com.artillexstudios.axvaults.vaults.Vault;
@@ -106,6 +107,9 @@ public class MySQL implements Database {
 
     @Override
     public CompletableFuture<Void> saveVault(@NotNull Vault vault) {
+        DefaultRedisDatabase redis = DefaultRedisDatabase.getInstance();
+        redis.lock(vault.getVaultPlayer().getUUID()).join();
+
         Consumer<Object> consumer = result -> {
             // delete empty vaults
             if (result instanceof Boolean bool && bool) {
@@ -154,6 +158,8 @@ public class MySQL implements Database {
                 }
             } catch (SQLException ex) {
                 ex.printStackTrace();
+            } finally {
+                redis.unlock(vault.getVaultPlayer().getUUID()).join();
             }
         };
 

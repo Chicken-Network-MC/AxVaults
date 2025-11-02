@@ -1,6 +1,7 @@
 package com.artillexstudios.axvaults.vaults;
 
 import com.artillexstudios.axvaults.AxVaults;
+import com.artillexstudios.axvaults.database.redis.DefaultRedisDatabase;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.Inventory;
@@ -29,12 +30,18 @@ public class VaultManager {
         return players.get(offlinePlayer.getUniqueId());
     }
 
-    public static CompletableFuture<VaultPlayer> getPlayer(@NotNull OfflinePlayer offlinePlayer) {
+    public static CompletableFuture<VaultPlayer> getPlayer(@NotNull OfflinePlayer offlinePlayer, boolean bypassLock) {
         CompletableFuture<VaultPlayer> cf = new CompletableFuture<>();
 
         VaultPlayer vaultPlayer = players.computeIfAbsent(offlinePlayer.getUniqueId(), VaultPlayer::new);
         if (vaultPlayer.isLoaded()) {
             return CompletableFuture.completedFuture(vaultPlayer);
+        }
+
+        if (!bypassLock) {
+            DefaultRedisDatabase redis = DefaultRedisDatabase.getInstance();
+            boolean isLocked = redis.isLocked(offlinePlayer.getUniqueId()).join();
+            if (isLocked) return CompletableFuture.completedFuture(null);
         }
 
         AxVaults.getThreadedQueue().submit(() -> vaultPlayer.load(cf));

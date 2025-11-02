@@ -33,7 +33,12 @@ public enum Open {
             return;
         }
 
-        VaultManager.getPlayer(sender).thenAccept(vaultPlayer -> {
+        VaultManager.getPlayer(sender, false).thenAccept(vaultPlayer -> {
+            if (vaultPlayer == null) {
+                sender.closeInventory();
+                return;
+            }
+
             Vault vault = vaultPlayer.getVault(number);
             if (vault == null) {
                 MESSAGEUTILS.sendLang(sender, "vault.not-unlocked", replacements);

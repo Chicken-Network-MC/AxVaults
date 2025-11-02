@@ -1,4 +1,4 @@
-package com.artillexstudios.axvaults.database;
+package com.artillexstudios.axvaults.database.sql;
 
 import com.artillexstudios.axvaults.vaults.Vault;
 import com.artillexstudios.axvaults.vaults.VaultPlayer;

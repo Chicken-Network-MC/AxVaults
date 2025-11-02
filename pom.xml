@@ -60,6 +60,10 @@
                                     <shadedPattern>com.artillexstudios.axvaults.libs.hikari</shadedPattern>
                                 </relocation>
                                 <relocation>
+                                    <pattern>com.chickennw.utils</pattern>
+                                    <shadedPattern>com.artillexstudios.axvaults.libs.utils</shadedPattern>
+                                </relocation>
+                                <relocation>
                                     <pattern>com.mysql</pattern>
                                     <shadedPattern>com.artillexstudios.axvaults.libs.mysql</shadedPattern>
                                 </relocation>
@@ -170,6 +174,17 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>6.3.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.chickennw</groupId>
+            <artifactId>chicken-utils</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>io.lettuce</groupId>
+            <artifactId>lettuce-core</artifactId>
+            <version>6.6.0.RELEASE</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

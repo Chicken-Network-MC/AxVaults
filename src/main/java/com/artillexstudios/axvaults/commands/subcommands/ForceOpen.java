@@ -20,7 +20,7 @@ public enum ForceOpen {
             final HashMap<String, String> replacements = new HashMap<>();
             replacements.put("%num%", "" + number);
 
-            VaultManager.getPlayer(player).thenAccept(vaultPlayer -> {
+            VaultManager.getPlayer(player, true).thenAccept(vaultPlayer -> {
                 Vault vault = vaultPlayer.getVault(number);
                 if (vault == null) {
                     MESSAGEUTILS.sendLang(player, "vault.not-unlocked", replacements);

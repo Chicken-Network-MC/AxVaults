@@ -2,6 +2,14 @@
 
 prefix: "<gradient:#55ff00:#AAFF00><b>AxVaults</b></gradient> &7» "
 
+redis:
+  host: localhost
+  user: default
+  port: 6023
+  password: password
+  database: 0
+  channel: exampleChannel
+  prefix: "axvaultssky"
 # this setting is not reloadable, you have to restart the server
 # how often should the plugin save vaults from ram to the database?
 # this is in minutes

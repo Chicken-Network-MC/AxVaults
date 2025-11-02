@@ -19,7 +19,7 @@ public enum Delete {
         replacements.put("%player%", player.getName());
         replacements.put("%num%", "" + number);
 
-        VaultManager.getPlayer(player).thenAccept(vaultPlayer -> {
+        VaultManager.getPlayer(player, true).thenAccept(vaultPlayer -> {
             final Vault vault = vaultPlayer.getVault(number);
             if (vault == null) {
                 MESSAGEUTILS.sendLang(sender, "view.not-found", replacements);

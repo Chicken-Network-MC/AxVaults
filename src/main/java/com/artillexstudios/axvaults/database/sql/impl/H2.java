@@ -1,9 +1,10 @@
-package com.artillexstudios.axvaults.database.impl;
+package com.artillexstudios.axvaults.database.sql.impl;
 
 import com.artillexstudios.axapi.serializers.Serializers;
 import com.artillexstudios.axapi.utils.StringUtils;
+import com.artillexstudios.axapi.utils.logging.LogUtils;
 import com.artillexstudios.axvaults.AxVaults;
-import com.artillexstudios.axvaults.database.Database;
+import com.artillexstudios.axvaults.database.sql.Database;
 import com.artillexstudios.axvaults.placed.PlacedVaults;
 import com.artillexstudios.axvaults.utils.VaultUtils;
 import com.artillexstudios.axvaults.vaults.Vault;
@@ -12,27 +13,31 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.h2.jdbc.JdbcConnection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-public class SQLite implements Database {
-    private Connection conn;
+public class H2 implements Database {
+    private JdbcConnection conn;
 
     @Override
     public String getType() {
-        return "SQLite";
+        return "H2";
     }
 
     @Override
     public void setup() {
         try {
-            Class.forName("org.sqlite.JDBC");
-            this.conn = DriverManager.getConnection(String.format("jdbc:sqlite:%s/data.db", AxVaults.getInstance().getDataFolder()));
+            conn = new JdbcConnection("jdbc:h2:./" + AxVaults.getInstance().getDataFolder() + "/data;mode=MySQL", new Properties(), null, null, false);
+            conn.setAutoCommit(true);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -122,11 +127,17 @@ public class SQLite implements Database {
 
         // if the server is shutting down, this can't be called async
         CompletableFuture<Void> local;
-        if (Bukkit.isPrimaryThread()) local = VaultUtils.serialize(vault).thenAccept(consumer);
-        else local = VaultUtils.serialize(vault).thenAcceptAsync(consumer);
+        if (Bukkit.isPrimaryThread()) {
+            local = VaultUtils.serialize(vault).thenAccept(consumer);
+        } else {
+            local = VaultUtils.serialize(vault).thenAcceptAsync(consumer);
+        }
 
         CompletableFuture<Void> cf = new CompletableFuture<>();
-        local.thenRun(() -> cf.complete(null));
+        local.exceptionally(throwable -> {
+            LogUtils.error("An exception occurred while saving vaults!", throwable);
+            return null;
+        }).thenRun(() -> cf.complete(null));
         return cf;
     }
 
@@ -215,7 +226,6 @@ public class SQLite implements Database {
     public void load() {
         final String sql = "SELECT * FROM axvaults_blocks;";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     final String vault = rs.getString(2);

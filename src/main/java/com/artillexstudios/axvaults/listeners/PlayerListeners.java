@@ -16,13 +16,13 @@ public class PlayerListeners implements Listener {
 
     public PlayerListeners() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            VaultManager.getPlayer(player);
+            VaultManager.getPlayer(player, true);
         }
     }
 
     @EventHandler
     public void onQuit(@NotNull PlayerQuitEvent event) {
-        VaultManager.getPlayer(event.getPlayer()).thenAccept((vaultPlayer) -> {
+        VaultManager.getPlayer(event.getPlayer(), false).thenAccept((vaultPlayer) -> {
             log.info("Unloading player: " + event.getPlayer().getName());
             vaultPlayer.save();
             vaultPlayer.getVaultMap().values().forEach(VaultManager::removeVault);

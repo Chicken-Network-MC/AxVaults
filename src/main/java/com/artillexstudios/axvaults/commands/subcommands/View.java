@@ -20,7 +20,12 @@ public enum View {
         replacements.put("%player%", player.getName());
 
         if (number == null) {
-            VaultManager.getPlayer(player).thenAccept(vaultPlayer -> {
+            VaultManager.getPlayer(player, false).thenAccept(vaultPlayer -> {
+                if (vaultPlayer == null) {
+                    sender.closeInventory();
+                    return;
+                }
+
                 replacements.put("%vaults%", vaultPlayer.getVaultMap().values().stream().filter(vault -> vault.getSlotsFilled() != 0).map(vault -> "" + vault.getId()).collect(Collectors.joining(", ")));
                 MESSAGEUTILS.sendLang(sender, "view.info", replacements);
             });
@@ -29,7 +34,12 @@ public enum View {
 
         replacements.put("%num%", "" + number);
 
-        VaultManager.getPlayer(player).thenAccept(vaultPlayer -> {
+        VaultManager.getPlayer(player, false).thenAccept(vaultPlayer -> {
+            if (vaultPlayer == null) {
+                sender.closeInventory();
+                return;
+            }
+
             final Vault vault = vaultPlayer.getVault(number);
             if (vault == null) {
                 MESSAGEUTILS.sendLang(sender, "view.not-found", replacements);

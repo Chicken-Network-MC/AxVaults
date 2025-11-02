@@ -14,10 +14,11 @@ import com.artillexstudios.axapi.utils.MessageUtils;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axapi.utils.featureflags.FeatureFlags;
 import com.artillexstudios.axvaults.commands.CommandManager;
-import com.artillexstudios.axvaults.database.Database;
-import com.artillexstudios.axvaults.database.impl.H2;
-import com.artillexstudios.axvaults.database.impl.MySQL;
-import com.artillexstudios.axvaults.database.impl.SQLite;
+import com.artillexstudios.axvaults.database.redis.DefaultRedisDatabase;
+import com.artillexstudios.axvaults.database.sql.Database;
+import com.artillexstudios.axvaults.database.sql.impl.H2;
+import com.artillexstudios.axvaults.database.sql.impl.MySQL;
+import com.artillexstudios.axvaults.database.sql.impl.SQLite;
 import com.artillexstudios.axvaults.hooks.HookManager;
 import com.artillexstudios.axvaults.libraries.Libraries;
 import com.artillexstudios.axvaults.listeners.*;
@@ -136,6 +137,7 @@ public final class AxVaults extends AxPlugin {
         CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new)).join();
         database.disable();
         threadedQueue.stop();
+        DefaultRedisDatabase.getInstance().shutdown();
     }
 
     public void updateFlags() {
