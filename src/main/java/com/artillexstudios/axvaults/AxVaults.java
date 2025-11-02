@@ -26,7 +26,6 @@ import com.artillexstudios.axvaults.utils.UpdateNotifier;
 import com.artillexstudios.axvaults.utils.VaultUtils;
 import com.artillexstudios.axvaults.vaults.Vault;
 import com.artillexstudios.axvaults.vaults.VaultManager;
-import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import revxrsal.zapper.DependencyManager;
