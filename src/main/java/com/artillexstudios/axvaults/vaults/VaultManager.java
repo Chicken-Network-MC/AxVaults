@@ -31,16 +31,20 @@ public class VaultManager {
     }
 
     public static CompletableFuture<VaultPlayer> getPlayer(@NotNull OfflinePlayer offlinePlayer, boolean bypassLock) {
+        return getPlayer(offlinePlayer.getUniqueId(), bypassLock);
+    }
+
+    public static CompletableFuture<VaultPlayer> getPlayer(@NotNull UUID uuid, boolean bypassLock) {
         CompletableFuture<VaultPlayer> cf = new CompletableFuture<>();
 
-        VaultPlayer vaultPlayer = players.computeIfAbsent(offlinePlayer.getUniqueId(), VaultPlayer::new);
+        VaultPlayer vaultPlayer = players.computeIfAbsent(uuid, VaultPlayer::new);
         if (vaultPlayer.isLoaded()) {
             return CompletableFuture.completedFuture(vaultPlayer);
         }
 
         if (!bypassLock) {
             DefaultRedisDatabase redis = DefaultRedisDatabase.getInstance();
-            boolean isLocked = redis.isLocked(offlinePlayer.getUniqueId()).join();
+            boolean isLocked = redis.isLocked(uuid).join();
             if (isLocked) return CompletableFuture.completedFuture(null);
         }
 
