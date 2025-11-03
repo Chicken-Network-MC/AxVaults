@@ -6,6 +6,7 @@ import com.artillexstudios.axapi.utils.ItemBuilder;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axvaults.utils.SoundUtils;
 import com.artillexstudios.axvaults.vaults.Vault;
+import com.artillexstudios.axvaults.vaults.VaultManager;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import dev.triumphteam.gui.guis.PaginatedGui;
@@ -64,8 +65,6 @@ public class ItemPicker {
                 SoundUtils.playSound(player, MESSAGES.getString("sounds.select-icon"));
                 if (CONFIG.getBoolean("selector-stay-open", true))
                     open(player, vault, oldPage, gui.getCurrentPageNum());
-                else
-                    new VaultSelector().open(player, oldPage);
             });
             gui.addItem(guiItem);
         }
@@ -87,7 +86,7 @@ public class ItemPicker {
         final Section back;
         if ((back = MESSAGES.getSection("gui-items.back")) != null) {
             final GuiItem item3 = new GuiItem(ItemBuilder.create(back).get());
-            item3.setAction(event -> new VaultSelector().open(player, oldPage));
+            item3.setAction(event -> new VaultSelector().open(player, VaultManager.getPlayer(player, false).join(), oldPage));
             gui.setItem(rows, 5, item3);
         }
 

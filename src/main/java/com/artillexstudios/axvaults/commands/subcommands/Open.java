@@ -1,5 +1,6 @@
 package com.artillexstudios.axvaults.commands.subcommands;
 
+import com.artillexstudios.axvaults.AxVaults;
 import com.artillexstudios.axvaults.guis.VaultSelector;
 import com.artillexstudios.axvaults.vaults.Vault;
 import com.artillexstudios.axvaults.vaults.VaultManager;
@@ -19,7 +20,7 @@ public enum Open {
                 MESSAGEUTILS.sendLang(sender, "no-permission");
                 return;
             }
-            new VaultSelector().open(sender);
+            new VaultSelector().open(sender, VaultManager.getPlayer(sender, false).join());
             return;
         }
 
