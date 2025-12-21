@@ -67,6 +67,10 @@
                                     <pattern>com.mysql</pattern>
                                     <shadedPattern>com.artillexstudios.axvaults.libs.mysql</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>io.lettuce</pattern>
+                                    <shadedPattern>com.artillexstudios.axvaults.libs.lettuce</shadedPattern>
+                                </relocation>
 <!--                                <relocation>-->
 <!--                                    <pattern>org.postgresql</pattern>-->
 <!--                                    <shadedPattern>com.artillexstudios.axvaults.libs.postgresql</shadedPattern>-->
@@ -184,8 +188,7 @@
         <dependency>
             <groupId>io.lettuce</groupId>
             <artifactId>lettuce-core</artifactId>
-            <version>6.6.0.RELEASE</version>
-            <scope>provided</scope>
+            <version>6.8.1.RELEASE</version>
         </dependency>
     </dependencies>
 
