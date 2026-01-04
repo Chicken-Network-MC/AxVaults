@@ -23,16 +23,12 @@ public class PlayerListeners implements Listener {
     @EventHandler
     public void onJoin(@NotNull PlayerJoinEvent event) {
         VaultManager.loadPlayer(event.getPlayer());
-        if (AxVaults.getDatabase() instanceof MySQL db) db.checkForChanges();
     }
 
     @EventHandler
     public void onQuit(@NotNull PlayerQuitEvent event) {
         VaultPlayer vaultPlayer = VaultManager.getPlayerOrNull(event.getPlayer());
         if (vaultPlayer == null) return;
-        AxVaults.getThreadedQueue().submit(() -> {
-            vaultPlayer.save();
-            if (AxVaults.getDatabase() instanceof MySQL db) db.checkForChanges();
-        });
+        AxVaults.getThreadedQueue().submit(vaultPlayer::save);
     }
 }
